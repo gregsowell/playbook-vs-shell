@@ -33,11 +33,17 @@
         group: root
         mode: '0600'
         remote_src: no
+      notify: 
+        - Restart sssd service
+        - Touch /.autorelabel
 
     - name: Create custom authselect profile
       command: authselect create-profile custom-sssd -b sssd --symlink-meta
       args:
         creates: /etc/authselect/custom/custom-sssd
+      notify: 
+        - Restart sssd service
+        - Touch /.autorelabel
 
     - name: Select custom authselect profile with options
       command: >
@@ -45,7 +51,11 @@
         with-mkhomedir with-faillock with-pamaccess without-nullok
       args:
         creates: /etc/authselect/authselect.conf
+      notify: 
+        - Restart sssd service
+        - Touch /.autorelabel
 
+  handlers:
     - name: Restart sssd service
       systemd:
         name: sssd
