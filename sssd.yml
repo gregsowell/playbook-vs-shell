@@ -24,14 +24,15 @@
         enabled: yes
         state: started
 
-    - name: Move sssd.conf to /etc/sssd
+    - name: Move sssd.conf from templates/sssd.conf to /etc/sssd
       copy:
-        src: /root/build/sssd.conf
-        dest: /etc/sssd/sssd.conf
-        owner: root
-        group: root
-        mode: '0600'
-        remote_src: yes
+      src: templates/sssd.conf
+      dest: /etc/sssd/sssd.conf
+      owner: root
+      group: root
+      mode: '0600'
+      remote_src: no
+      # The file is copied from the local machine running Ansible
 
     - name: Create custom authselect profile
       command: authselect create-profile custom-sssd -b sssd --symlink-meta
