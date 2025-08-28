@@ -5,11 +5,11 @@
   tasks:
     - name: Copy sssd.sh to target from templates folder
       copy:
-      src: templates/sssd.sh
-      dest: /root/sssd.sh
-      owner: 0
-      group: 0
-      mode: '0755'
+        src: templates/sssd.sh
+        dest: /root/sssd.sh
+        owner: 0
+        group: 0
+        mode: '0755'
 
     - name: Execute sssd.sh
       command: /root/sssd.sh
