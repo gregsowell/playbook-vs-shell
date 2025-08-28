@@ -1,6 +1,7 @@
 ---
 - name: Playbook that will copy the sssd.sh script to the target and use the command module to launch it
   hosts: node01
+  gather_facts: false
   vars:
   tasks:
     - name: Copy sssd.sh to target from templates folder
