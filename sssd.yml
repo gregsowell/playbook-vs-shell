@@ -32,7 +32,6 @@
         group: root
         mode: '0600'
         remote_src: no
-      # The file is copied from the local machine running Ansible
 
     - name: Create custom authselect profile
       command: authselect create-profile custom-sssd -b sssd --symlink-meta
@@ -50,6 +49,7 @@
       systemd:
         name: sssd
         state: restarted
+      check_mode: true
 
     - name: Touch /.autorelabel
       file:
