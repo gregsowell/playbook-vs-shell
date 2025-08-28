@@ -1,0 +1,15 @@
+---
+- name: Playbook that will copy the sssd.sh script to the target and use the command module to launch it
+  hosts: node1
+  vars:
+  tasks:
+    - name: Copy sssd.sh to target
+      copy:
+        src: /root/build/sssd.sh
+        dest: /root/sssd.sh
+        owner: 0
+        group: 0
+        mode: '0755'
+
+    - name: Execute sssd.sh
+      command: /tmp/sssd.sh

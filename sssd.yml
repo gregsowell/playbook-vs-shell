@@ -1,0 +1,56 @@
+---
+- name: Install and configure SSSD
+  hosts: node1
+  #become: yes
+  vars:
+
+  tasks:
+    - name: Install required packages
+      ansible.builtin.dnf:
+        name:
+          - sssd-client
+          - sssd-dbus
+          - sssd-krb5-common
+          - sssd-ldap
+          - sssd-nfs-idmap
+          - sssd-tools
+          - oddjob
+          - oddjob-mkhomedir
+        state: present
+
+    - name: Enable and start oddjobd service
+      ansible.builtin.systemd:
+        name: oddjobd
+        enabled: yes
+        state: started
+
+    - name: Move sssd.conf to /etc/sssd
+      copy:
+        src: /root/build/sssd.conf
+        dest: /etc/sssd/sssd.conf
+        owner: root
+        group: root
+        mode: '0600'
+        remote_src: yes
+
+    - name: Create custom authselect profile
+      command: authselect create-profile custom-sssd -b sssd --symlink-meta
+      args:
+        creates: /etc/authselect/custom/custom-sssd
+
+    - name: Select custom authselect profile with options
+      command: >
+        authselect select custom/custom-sssd
+        with-mkhomedir with-faillock with-pamaccess without-nullok
+      args:
+        creates: /etc/authselect/authselect.conf
+
+    - name: Restart sssd service
+      systemd:
+        name: sssd
+        state: restarted
+
+    - name: Touch /.autorelabel
+      file:
+        path: /.autorelabel
+        state: touch
